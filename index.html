@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Greener Pastures Tech | Software · Web · Mobile · AI</title>
+<meta name="description" content="Greener Pastures Tech builds custom software, websites, mobile apps and AI solutions for businesses. Free first consultation — no commitment."/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green-deep:   #0a2e1a;
+  --green-mid:    #1a5c34;
+  --green-bright: #2ecc71;
+  --green-neon:   #39ff8a;
+  --cream:        #f5f0e8;
+  --cream-dark:   #e8e0d0;
+  --white:        #ffffff;
+  --muted:        #8a9e90;
+  --card:         #0e3b22;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'DM Sans', sans-serif;
+  background:var(--green-deep);
+  color:var(--cream);
+  overflow-x:hidden;
+  cursor:none;
+}
+*, a, button { cursor:none !important; }
+
+/* ── CURSOR ── */
+#dot {
+  width:10px; height:10px; background:var(--green-neon); border-radius:50%;
+  position:fixed; top:0; left:0; pointer-events:none; z-index:99999;
+  transform:translate(-50%,-50%);
+}
+#ring {
+  width:38px; height:38px; border:1.5px solid var(--green-neon); border-radius:50%;
+  position:fixed; top:0; left:0; pointer-events:none; z-index:99998;
+  transform:translate(-50%,-50%); opacity:.45;
+  transition:width .3s, height .3s, opacity .3s;
+}
+#ring.grow { width:62px; height:62px; opacity:.18; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; width:100%; z-index:1000;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.2rem 5%;
+  background:rgba(10,46,26,.93);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(46,204,113,.12);
+}
+.logo {
+  font-family:'Syne', sans-serif; font-weight:800; font-size:1.3rem;
+  letter-spacing:-.02em; color:var(--white); text-decoration:none;
+}
+.logo em { font-style:normal; color:var(--green-neon); }
+.nav-links { display:flex; gap:2.2rem; list-style:none; align-items:center; }
+.nav-links a {
+  color:var(--cream); text-decoration:none; font-size:.9rem;
+  font-weight:400; opacity:.72; transition:opacity .2s, color .2s;
+}
+.nav-links a:hover { opacity:1; color:var(--green-neon); }
+.nav-cta {
+  background:var(--green-bright) !important; color:var(--green-deep) !important;
+  font-weight:600 !important; padding:.5rem 1.4rem; border-radius:50px; opacity:1 !important;
+  transition:background .2s !important;
+}
+.nav-cta:hover { background:var(--green-neon) !important; }
+
+/* Hamburger */
+.hamburger {
+  display:none; flex-direction:column; gap:5px;
+  background:none; border:none; padding:6px; z-index:1001;
+}
+.hamburger span {
+  display:block; width:26px; height:2px;
+  background:var(--cream); border-radius:2px;
+  transition:transform .3s, opacity .3s;
+}
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+  background:rgba(10,46,26,.98); backdrop-filter:blur(20px);
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:2rem; z-index:1000;
+}
+.mobile-menu.open { display:flex; }
+.mobile-menu a {
+  color:var(--cream); text-decoration:none; font-family:'Syne',sans-serif;
+  font-size:2rem; font-weight:700; transition:color .2s;
+}
+.mobile-menu a:hover { color:var(--green-neon); }
+.mobile-menu .m-cta {
+  background:var(--green-bright); color:var(--green-deep) !important;
+  font-weight:800; padding:1rem 2.5rem; border-radius:50px;
+  font-size:1.2rem !important;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height:100vh; display:flex; align-items:center;
+  padding:9rem 5% 5rem; position:relative; overflow:hidden;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 65% 50%, rgba(46,204,113,.13) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 82% 18%, rgba(57,255,138,.07) 0%, transparent 60%);
+}
+.hero-grid {
+  position:absolute; inset:0; opacity:.04;
+  background-image:
+    linear-gradient(var(--green-bright) 1px, transparent 1px),
+    linear-gradient(90deg, var(--green-bright) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+.hero-content { position:relative; z-index:2; max-width:700px; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(46,204,113,.12); border:1px solid rgba(46,204,113,.3);
+  border-radius:50px; padding:.4rem 1rem; font-size:.8rem;
+  font-weight:500; color:var(--green-bright); margin-bottom:2rem;
+  animation:fadeUp .8s ease both;
+}
+.hero-badge::before {
+  content:''; width:7px; height:7px;
+  background:var(--green-neon); border-radius:50%; animation:blink 2s infinite;
+}
+.hero h1 {
+  font-family:'Syne', sans-serif; font-size:clamp(2.8rem, 7vw, 5.5rem);
+  font-weight:800; line-height:1.05; letter-spacing:-.03em; color:var(--white);
+  animation:fadeUp .8s .15s ease both;
+}
+.hero h1 em { font-style:normal; color:var(--green-neon); }
+.hero-sub {
+  font-size:1.1rem; line-height:1.75; color:var(--muted);
+  max-width:520px; margin:1.5rem 0 2.5rem; font-weight:300;
+  animation:fadeUp .8s .3s ease both;
+}
+.hero-btns { display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp .8s .45s ease both; }
+
+.btn-p {
+  background:var(--green-bright); color:var(--green-deep);
+  font-family:'DM Sans', sans-serif; font-weight:600; font-size:.95rem;
+  padding:.85rem 2rem; border-radius:50px; border:none;
+  text-decoration:none; display:inline-flex; align-items:center; gap:.5rem;
+  transition:background .2s, transform .2s;
+}
+.btn-p:hover { background:var(--green-neon); transform:translateY(-2px); }
+.btn-o {
+  background:transparent; color:var(--cream);
+  font-family:'DM Sans', sans-serif; font-weight:500; font-size:.95rem;
+  padding:.85rem 2rem; border-radius:50px;
+  border:1px solid rgba(245,240,232,.25);
+  text-decoration:none; display:inline-flex; align-items:center; gap:.5rem;
+  transition:border-color .2s, color .2s, transform .2s;
+}
+.btn-o:hover { border-color:var(--green-bright); color:var(--green-bright); transform:translateY(-2px); }
+.btn-wa {
+  background:#25D366; color:#fff;
+  font-family:'DM Sans', sans-serif; font-weight:600; font-size:.95rem;
+  padding:.85rem 2rem; border-radius:50px; border:none;
+  text-decoration:none; display:inline-flex; align-items:center; gap:.5rem;
+  transition:background .2s, transform .2s;
+}
+.btn-wa:hover { background:#1db954; transform:translateY(-2px); }
+.btn-wa svg { width:18px; height:18px; }
+
+/* Rings */
+.rings {
+  position:absolute; right:5%; top:50%; transform:translateY(-50%);
+  width:clamp(260px, 36vw, 500px); height:clamp(260px, 36vw, 500px);
+  animation:fadeUp 1s .5s ease both;
+}
+.ring-el {
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(46,204,113,.15);
+  animation:spin 22s linear infinite;
+}
+.ring-el:nth-child(2){ inset:10%; border-color:rgba(57,255,138,.22); animation-duration:16s; animation-direction:reverse; }
+.ring-el:nth-child(3){ inset:26%; border-color:rgba(46,204,113,.32); animation-duration:11s; }
+.ring-center {
+  position:absolute; inset:36%;
+  background:radial-gradient(circle, rgba(46,204,113,.22), rgba(10,46,26,.9));
+  border-radius:50%; border:1px solid rgba(57,255,138,.4);
+  display:flex; align-items:center; justify-content:center; font-size:2.4rem;
+}
+
+/* ── HONEST BANNER ── */
+.honest-bar {
+  background:rgba(57,255,138,.06);
+  border-top:1px solid rgba(57,255,138,.1); border-bottom:1px solid rgba(57,255,138,.1);
+  padding:2rem 5%; text-align:center;
+}
+.honest-bar p {
+  font-size:1rem; color:var(--muted); line-height:1.75; max-width:800px; margin:0 auto; font-weight:300;
+}
+.honest-bar strong { color:var(--green-neon); font-weight:600; }
+
+/* ── SHARED ── */
+section { padding:7rem 5%; }
+.tag {
+  display:inline-block; font-size:.72rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.15em; color:var(--green-bright); margin-bottom:1rem;
+}
+.sec-title {
+  font-family:'Syne', sans-serif; font-size:clamp(2rem, 4vw, 3.2rem);
+  font-weight:800; line-height:1.1; letter-spacing:-.02em; color:var(--white);
+  max-width:600px; margin-bottom:1.2rem;
+}
+.sec-title span { color:var(--green-neon); }
+.sec-desc { color:var(--muted); font-size:1rem; line-height:1.78; max-width:520px; font-weight:300; margin-bottom:3.5rem; }
+
+/* ── SERVICES ── */
+#services { background:var(--green-deep); }
+.svc-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+  gap:1.5px; background:rgba(46,204,113,.07); border:1px solid rgba(46,204,113,.07);
+}
+.svc-card {
+  background:var(--green-deep); padding:2.5rem; position:relative; overflow:hidden;
+  transition:background .3s;
+}
+.svc-card::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--green-bright), var(--green-neon));
+  transform:scaleX(0); transform-origin:left; transition:transform .35s ease;
+}
+.svc-card:hover { background:var(--card); }
+.svc-card:hover::after { transform:scaleX(1); }
+.svc-icon {
+  width:50px; height:50px; background:rgba(46,204,113,.1); border:1px solid rgba(46,204,113,.2);
+  border-radius:13px; display:flex; align-items:center; justify-content:center;
+  font-size:1.35rem; margin-bottom:1.4rem; transition:background .3s, border-color .3s;
+}
+.svc-card:hover .svc-icon { background:rgba(46,204,113,.2); border-color:var(--green-bright); }
+.svc-card h3 { font-family:'Syne', sans-serif; font-size:1.1rem; font-weight:700; color:var(--white); margin-bottom:.65rem; }
+.svc-card p { font-size:.88rem; color:var(--muted); line-height:1.72; font-weight:300; }
+
+/* ── ABOUT ── */
+#about {
+  background:rgba(14,59,34,.4);
+  display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;
+}
+.about-box {
+  background:var(--card); border:1px solid rgba(46,204,113,.15);
+  border-radius:20px; padding:4rem; text-align:center; font-size:5rem;
+  position:relative; overflow:hidden;
+}
+.about-box::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at center, rgba(46,204,113,.08), transparent 70%);
+}
+.float-tag {
+  position:absolute; background:var(--card); border:1px solid rgba(46,204,113,.3);
+  border-radius:11px; padding:.7rem 1.1rem; font-size:.78rem; font-weight:500;
+  color:var(--green-bright); white-space:nowrap;
+}
+.ft1 { bottom:1rem; right:1rem; }
+.ft2 { top:1rem; left:1rem; }
+.vals { margin-top:2rem; display:flex; flex-direction:column; gap:1.1rem; }
+.val { display:flex; align-items:flex-start; gap:1rem; }
+.vdot { width:8px; height:8px; min-width:8px; background:var(--green-neon); border-radius:50%; margin-top:.45rem; }
+.val h4 { font-size:.93rem; font-weight:600; color:var(--white); margin-bottom:.2rem; }
+.val p { font-size:.85rem; color:var(--muted); line-height:1.65; font-weight:300; }
+
+/* ── PROCESS ── */
+#process { background:rgba(14,59,34,.3); }
+.proc-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.8rem; }
+.proc-step {
+  padding:2rem; border:1px solid rgba(46,204,113,.1);
+  border-radius:16px; background:rgba(10,46,26,.5); transition:border-color .3s;
+}
+.proc-step:hover { border-color:rgba(46,204,113,.35); }
+.step-n { font-family:'Syne', sans-serif; font-size:3.5rem; font-weight:800; color:rgba(46,204,113,.14); line-height:1; margin-bottom:.4rem; }
+.proc-step h3 { font-family:'Syne', sans-serif; font-size:1rem; font-weight:700; color:var(--white); margin-bottom:.55rem; }
+.proc-step p { font-size:.85rem; color:var(--muted); line-height:1.7; font-weight:300; }
+
+/* ── TESTIMONIALS ── */
+#testimonials { background:var(--green-deep); }
+.testi-note {
+  display:inline-flex; align-items:center; gap:.5rem; margin-bottom:2.5rem;
+  background:rgba(57,255,138,.06); border:1px solid rgba(57,255,138,.12);
+  border-radius:50px; padding:.4rem 1rem; font-size:.8rem; color:var(--muted); font-style:italic;
+}
+.testi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:1.4rem; }
+.tcard {
+  background:var(--card); border:1px solid rgba(46,204,113,.1);
+  border-radius:20px; padding:2rem; transition:border-color .3s, transform .3s;
+}
+.tcard:hover { border-color:rgba(46,204,113,.32); transform:translateY(-4px); }
+.stars { color:var(--green-neon); font-size:.85rem; margin-bottom:.75rem; letter-spacing:.1em; }
+.quote { font-family:'Syne', sans-serif; font-size:4rem; color:var(--green-bright); line-height:.5; margin-bottom:1rem; opacity:.45; }
+.ttext { font-size:.92rem; line-height:1.76; color:var(--cream-dark); font-weight:300; font-style:italic; margin-bottom:1.5rem; }
+.tauthor { display:flex; align-items:center; gap:1rem; }
+.tavatar {
+  width:44px; height:44px; border-radius:50%;
+  background:linear-gradient(135deg, var(--green-mid), var(--green-bright));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne', sans-serif; font-weight:700; font-size:1rem; color:var(--white); flex-shrink:0;
+}
+.tinfo h5 { font-size:.88rem; font-weight:600; color:var(--white); }
+.tinfo span { font-size:.78rem; color:var(--muted); }
+
+/* ── CTA BANNER ── */
+.cta-wrap { padding:0 5% 5rem; }
+.cta-box {
+  padding:5rem; border-radius:24px;
+  background:linear-gradient(135deg, var(--green-mid) 0%, #0d4526 50%, var(--green-deep) 100%);
+  border:1px solid rgba(57,255,138,.15); text-align:center; position:relative; overflow:hidden;
+}
+.cta-box::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 70% at 50% 0%, rgba(57,255,138,.12), transparent 70%);
+}
+.cta-box h2 {
+  font-family:'Syne', sans-serif; font-size:clamp(2rem, 4vw, 3rem);
+  font-weight:800; color:var(--white); margin-bottom:1rem; position:relative;
+}
+.cta-box p { color:rgba(245,240,232,.65); font-size:1.05rem; margin-bottom:2.5rem; font-weight:300; position:relative; }
+.cta-btns { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; position:relative; }
+
+/* ── CONTACT ── */
+#contact { background:var(--green-deep); }
+.contact-grid { display:grid; grid-template-columns:1fr 1.3fr; gap:5rem; align-items:start; }
+.ci h3 { font-family:'Syne', sans-serif; font-size:1.5rem; font-weight:700; color:var(--white); margin-bottom:1rem; }
+.ci > p { color:var(--muted); line-height:1.75; font-size:.95rem; margin-bottom:1.5rem; font-weight:300; }
+.citem { display:flex; align-items:flex-start; gap:1rem; margin-bottom:1rem; }
+.cicon {
+  width:40px; height:40px; min-width:40px; background:rgba(46,204,113,.1);
+  border:1px solid rgba(46,204,113,.2); border-radius:10px;
+  display:flex; align-items:center; justify-content:center; font-size:1rem;
+}
+.citem span, .citem a { font-size:.9rem; color:var(--cream); word-break:break-word; }
+.citem a { color:var(--green-bright); text-decoration:none; }
+.citem a:hover { text-decoration:underline; }
+
+.wa-btn {
+  display:inline-flex; align-items:center; gap:.6rem;
+  background:#25D366; color:#fff; font-weight:600; font-size:1rem;
+  padding:.85rem 1.8rem; border-radius:50px; text-decoration:none;
+  margin-bottom:2rem; transition:background .2s, transform .2s;
+}
+.wa-btn:hover { background:#1db954; transform:translateY(-2px); }
+.wa-btn svg { width:20px; height:20px; }
+
+.form { display:flex; flex-direction:column; gap:1.2rem; }
+.frow { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+.fg { display:flex; flex-direction:column; gap:.4rem; }
+.fg label { font-size:.78rem; font-weight:500; color:var(--muted); letter-spacing:.05em; }
+.fg input, .fg textarea, .fg select {
+  background:var(--card); border:1px solid rgba(46,204,113,.15);
+  border-radius:10px; padding:.85rem 1rem;
+  font-family:'DM Sans', sans-serif; font-size:.9rem; color:var(--cream); outline:none;
+  transition:border-color .2s;
+}
+.fg input:focus, .fg textarea:focus, .fg select:focus { border-color:var(--green-bright); }
+.fg select option { background:var(--green-deep); }
+.fg textarea { resize:vertical; min-height:120px; }
+#sbtn { width:100%; justify-content:center; font-size:1rem; border:none; }
+.form-success {
+  display:none; background:rgba(46,204,113,.1); border:1px solid rgba(46,204,113,.3);
+  border-radius:12px; padding:1.2rem 1.5rem; color:var(--green-bright);
+  font-size:.95rem; text-align:center; line-height:1.6;
+}
+.form-success a { color:var(--green-neon); }
+
+/* ── FOOTER ── */
+footer {
+  background:rgba(5,22,13,.98);
+  border-top:1px solid rgba(46,204,113,.1);
+  padding:4rem 5% 2rem;
+}
+.fg-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.fb .logo { display:block; margin-bottom:1rem; }
+.fb p { font-size:.87rem; color:var(--muted); line-height:1.72; font-weight:300; max-width:280px; margin-bottom:1rem; }
+.fc h4 {
+  font-family:'Syne', sans-serif; font-size:.82rem; font-weight:700; color:var(--white);
+  text-transform:uppercase; letter-spacing:.1em; margin-bottom:1.2rem;
+}
+.fc ul { list-style:none; display:flex; flex-direction:column; gap:.65rem; }
+.fc ul a { font-size:.87rem; color:var(--muted); text-decoration:none; transition:color .2s; }
+.fc ul a:hover { color:var(--green-bright); }
+.fbot {
+  border-top:1px solid rgba(46,204,113,.08); padding-top:2rem;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+  font-size:.78rem; color:var(--muted);
+}
+.socials { display:flex; gap:.7rem; }
+.soc {
+  width:38px; height:38px; background:rgba(46,204,113,.08); border:1px solid rgba(46,204,113,.15);
+  border-radius:8px; display:flex; align-items:center; justify-content:center;
+  font-size:.78rem; font-weight:700; color:var(--cream); text-decoration:none;
+  transition:background .2s, border-color .2s, color .2s;
+}
+.soc:hover { background:rgba(46,204,113,.22); border-color:var(--green-bright); color:var(--green-neon); }
+.soc svg { width:16px; height:16px; }
+
+/* ── FLOATING WHATSAPP ── */
+.wa-float {
+  position:fixed; bottom:2rem; right:2rem; z-index:8000;
+  background:#25D366; color:#fff; border-radius:50px;
+  display:flex; align-items:center; gap:.6rem;
+  padding:.85rem 1.4rem; text-decoration:none; font-weight:600; font-size:.9rem;
+  box-shadow:0 4px 24px rgba(37,211,102,.4);
+  transition:transform .2s, box-shadow .2s;
+}
+.wa-float:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(37,211,102,.5); }
+.wa-float svg { width:22px; height:22px; flex-shrink:0; }
+.wa-pulse {
+  position:absolute; inset:0; border-radius:50px;
+  background:rgba(37,211,102,.35); animation:wapulse 2.5s ease-out infinite;
+}
+@keyframes wapulse { 0%{ transform:scale(1); opacity:.6; } 100%{ transform:scale(1.35); opacity:0; } }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{ opacity:0; transform:translateY(32px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes spin { from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+@keyframes blink { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.4; transform:scale(.75); } }
+.reveal { opacity:0; transform:translateY(38px); transition:opacity .8s ease, transform .8s ease; }
+.reveal.on { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:900px){
+  .rings { display:none; }
+  #about { grid-template-columns:1fr; gap:3rem; }
+  .contact-grid { grid-template-columns:1fr; gap:3rem; }
+  .fg-grid { grid-template-columns:1fr 1fr; }
+  .hamburger { display:flex; }
+  .nav-links { display:none; }
+}
+@media (max-width:600px){
+  .frow { grid-template-columns:1fr; }
+  .fg-grid { grid-template-columns:1fr; }
+  .cta-box { padding:3rem 1.5rem; }
+  .cta-wrap { padding:0 4% 4rem; }
+  .wa-float span { display:none; }
+  .wa-float { padding:.9rem; border-radius:50%; }
+  section { padding:5rem 5%; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="dot"></div>
+<div id="ring"></div>
+
+<!-- FLOATING WHATSAPP BUTTON -->
+<a href="https://wa.me/2349164386564?text=Hello%20Greener%20Pastures%20Tech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener" class="wa-float" aria-label="Chat on WhatsApp">
+  <div class="wa-pulse"></div>
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+  <span>Chat on WhatsApp</span>
+</a>
+
+<!-- NAV -->
+<nav>
+  <a href="javascript:void(0)" onclick="go('top')" class="logo">GP<em>.</em>Tech</a>
+  <ul class="nav-links">
+    <li><a href="javascript:void(0)" onclick="go('services')">Services</a></li>
+    <li><a href="javascript:void(0)" onclick="go('about')">About</a></li>
+    <li><a href="javascript:void(0)" onclick="go('process')">Process</a></li>
+    <li><a href="javascript:void(0)" onclick="go('testimonials')">Reviews</a></li>
+    <li><a href="javascript:void(0)" onclick="go('contact')" class="nav-cta">Get Started Free</a></li>
+  </ul>
+  <button class="hamburger" id="hbg" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mmenu">
+  <a href="javascript:void(0)" onclick="go('services');closeMenu()">Services</a>
+  <a href="javascript:void(0)" onclick="go('about');closeMenu()">About</a>
+  <a href="javascript:void(0)" onclick="go('process');closeMenu()">Process</a>
+  <a href="javascript:void(0)" onclick="go('testimonials');closeMenu()">Reviews</a>
+  <a href="javascript:void(0)" onclick="go('contact');closeMenu()" class="m-cta">Get Started Free &#8594;</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">&#127807; Building a Greener Digital Future</div>
+    <h1>Where <em>Innovation</em><br>Meets Purpose</h1>
+    <p class="hero-sub">Greener Pastures Tech builds powerful software, beautiful websites, mobile apps, and smart automation — technology that genuinely helps your business grow.</p>
+    <div class="hero-btns">
+      <a href="javascript:void(0)" onclick="go('services')" class="btn-p">Explore Services &#8594;</a>
+      <a href="https://wa.me/2349164386564?text=Hello!%20I%20would%20like%20a%20free%20consultation." target="_blank" rel="noopener" class="btn-wa">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+        WhatsApp Us
+      </a>
+      <a href="javascript:void(0)" onclick="go('contact')" class="btn-o">Free Consultation</a>
+    </div>
+  </div>
+  <div class="rings">
+    <div class="ring-el"></div>
+    <div class="ring-el"></div>
+    <div class="ring-el"></div>
+    <div class="ring-center">&#127807;</div>
+  </div>
+</section>
+
+<!-- HONEST BANNER — no fake stats, honest intro -->
+<div class="honest-bar">
+  <p>We are a <strong>new company built by experienced, passionate people.</strong> We don't have decades of fake history. What we have is real skill, honest communication, and total commitment to your success — and we'd rather earn your trust than manufacture it.</p>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="reveal">
+    <span class="tag">What We Do</span>
+    <h2 class="sec-title">Services That <span>Drive Growth</span></h2>
+    <p class="sec-desc">From your first idea to a fully deployed product, we cover every layer of the technology stack with precision and care.</p>
+  </div>
+  <div class="svc-grid reveal">
+    <div class="svc-card"><div class="svc-icon">&#128187;</div><h3>Custom Software Development</h3><p>Bespoke ERP, CRM, POS systems and SaaS platforms built for your exact workflow. Scalable, secure, and future-proof.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#127760;</div><h3>Web Development</h3><p>Fast, beautiful, responsive websites and web apps using modern frameworks. From landing pages to complex web portals.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#128241;</div><h3>Mobile App Development</h3><p>iOS and Android apps built with Flutter and React Native. Smooth UX, offline support, and App Store deployment handled.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#9889;</div><h3>Business Automation</h3><p>Eliminate repetitive tasks and streamline operations with intelligent workflow automation, RPA, and API integrations.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#129302;</div><h3>AI &amp; Machine Learning</h3><p>Integrate AI chatbots, predictive analytics, and intelligent recommendation systems into your business processes.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#9925;</div><h3>Cloud &amp; DevOps</h3><p>Cloud migration, infrastructure on AWS/Azure/GCP, CI/CD pipelines, and round-the-clock server management.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#128274;</div><h3>Cybersecurity</h3><p>Security audits, penetration testing, and compliance consulting to keep your data and users protected 24/7.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#127912;</div><h3>UI/UX Design</h3><p>User-first product design using Figma. We prototype, test, and deliver interfaces that convert visitors into loyal customers.</p></div>
+    <div class="svc-card"><div class="svc-icon">&#128202;</div><h3>Data &amp; Analytics</h3><p>Business intelligence dashboards, data pipelines, and visualisation tools that turn raw data into actionable insights.</p></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-box">
+      &#127807;
+      <div class="float-tag ft1">&#9989; Skilled &amp; Passionate Team</div>
+      <div class="float-tag ft2">&#127758; Serving Africa &amp; Beyond</div>
+    </div>
+  </div>
+  <div class="reveal">
+    <span class="tag">About Us</span>
+    <h2 class="sec-title">We Build <span>Tomorrow's</span> Technology Today</h2>
+    <p class="sec-desc">Greener Pastures Tech is a new software company with a clear mission — to build technology that genuinely opens new doors for every business, no matter the size. We are honest about who we are and where we're headed.</p>
+    <div class="vals">
+      <div class="val"><div class="vdot"></div><div><h4>Honest From Day One</h4><p>We are new. We won't fake statistics or invent years of history. We offer real skill, genuine passion, and total commitment to delivering results.</p></div></div>
+      <div class="val"><div class="vdot"></div><div><h4>Transparent Communication</h4><p>No surprises, no jargon. Regular updates, clear timelines, and honest pricing — from kickoff to launch and beyond.</p></div></div>
+      <div class="val"><div class="vdot"></div><div><h4>Built for the Long Term</h4><p>We don't just build and disappear. We stay, support, and grow with you — because your success is what builds ours.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="reveal">
+    <span class="tag">How We Work</span>
+    <h2 class="sec-title">Our <span>5-Step</span> Process</h2>
+    <p class="sec-desc">A clear, repeatable process that takes your idea from concept to a live product — on time, on budget, no surprises.</p>
+  </div>
+  <div class="proc-grid reveal">
+    <div class="proc-step"><div class="step-n">01</div><h3>Discovery &amp; Strategy</h3><p>We deep-dive into your business goals, audience, and technical needs to build a solid project roadmap together.</p></div>
+    <div class="proc-step"><div class="step-n">02</div><h3>Design &amp; Prototype</h3><p>Our designers craft wireframes and high-fidelity mockups you approve before we write a single line of code.</p></div>
+    <div class="proc-step"><div class="step-n">03</div><h3>Build &amp; Test</h3><p>Our engineers build using the best tech stack for the job — tested thoroughly at every sprint with your feedback in the loop.</p></div>
+    <div class="proc-step"><div class="step-n">04</div><h3>Launch &amp; Deploy</h3><p>We deploy your product, configure everything, run final tests, and make sure your launch is smooth and successful.</p></div>
+    <div class="proc-step"><div class="step-n">05</div><h3>Support &amp; Grow</h3><p>We don't disappear after launch. Ongoing maintenance, updates, and support — so you can focus on growing.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="reveal">
+    <span class="tag">What People Say</span>
+    <h2 class="sec-title">Kind Words From <span>Early Clients</span></h2>
+    <p class="sec-desc">We are new and working hard to earn every word of feedback we receive.</p>
+    <div class="testi-note">&#128161; These reflect the real experiences of people we have worked with so far.</div>
+  </div>
+  <div class="testi-grid reveal">
+    <div class="tcard">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="quote">"</div>
+      <p class="ttext">Greener Pastures Tech completely transformed our operations. They built a custom inventory system that cut our processing time significantly. Professional, communicative, and delivered on time. I'd recommend them to any serious business.</p>
+      <div class="tauthor"><div class="tavatar">AO</div><div class="tinfo"><h5>Adaeze Okonkwo</h5><span>CEO, SwiftMart Retail Ltd — Lagos</span></div></div>
+    </div>
+    <div class="tcard">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="quote">"</div>
+      <p class="ttext">We needed a mobile app built properly. GP Tech delivered a polished iOS and Android app that genuinely feels premium. Their honesty and attention to detail throughout made the whole process smooth and stress-free.</p>
+      <div class="tauthor"><div class="tavatar">KM</div><div class="tinfo"><h5>Kwame Mensah</h5><span>Founder, RideConnect — Accra, Ghana</span></div></div>
+    </div>
+    <div class="tcard">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="quote">"</div>
+      <p class="ttext">The automation solution for our HR team saves us hours every week. Onboarding, payroll, and alerts now run automatically. GP Tech is a team we trust — they communicate clearly and deliver what they promise.</p>
+      <div class="tauthor"><div class="tavatar">FI</div><div class="tinfo"><h5>Fatima Ibrahim</h5><span>HR Director, NovaCorp Group — Abuja</span></div></div>
+    </div>
+    <div class="tcard">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="quote">"</div>
+      <p class="ttext">They built our e-commerce platform with genuine care. The team felt like an extension of our own company — always available and always honest. The final product exceeded our expectations for the budget we had.</p>
+      <div class="tauthor"><div class="tavatar">TN</div><div class="tinfo"><h5>Tunde Nwosu</h5><span>Co-Founder, StyleHub — Port Harcourt</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-wrap reveal">
+  <div class="cta-box">
+    <h2>Ready to Build Something Great?</h2>
+    <p>Your first consultation is completely free. No sales pitch — just an honest conversation about what technology can do for your business.</p>
+    <div class="cta-btns">
+      <a href="javascript:void(0)" onclick="go('contact')" class="btn-p">Start Your Project &#8594;</a>
+      <a href="https://wa.me/2349164386564?text=Hello!%20I%20would%20like%20a%20free%20consultation." target="_blank" rel="noopener" class="btn-wa">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+        WhatsApp Us Now
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="ci reveal">
+      <span class="tag">Contact Us</span>
+      <h3>Let's Start a Conversation</h3>
+      <p>Whether you have a fully formed idea or just a rough concept, we'd love to hear from you. We respond within 24 hours — usually much faster on WhatsApp.</p>
+
+      <a href="https://wa.me/2349164386564?text=Hello%20Greener%20Pastures%20Tech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener" class="wa-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+        Message us on WhatsApp — 09164386564
+      </a>
+
+      <div class="citem"><div class="cicon">&#128231;</div><span><a href="mailto:info@greenerpasturestech.xyz">info@greenerpasturestech.xyz</a></span></div>
+      <div class="citem"><div class="cicon">&#128222;</div><span><a href="tel:+2349164386564">+234 916 438 6564</a></span></div>
+      <div class="citem"><div class="cicon">&#128205;</div><span>Lagos, Nigeria — Serving Clients Globally</span></div>
+      <div class="citem"><div class="cicon">&#128336;</div><span>Mon–Fri: 8am–6pm &nbsp;|&nbsp; Sat: 9am–3pm WAT</span></div>
+      <div class="citem"><div class="cicon">&#127760;</div><span><a href="https://www.greenerpasturestech.xyz" target="_blank">www.greenerpasturestech.xyz</a></span></div>
+    </div>
+
+    <div class="reveal">
+      <div class="form">
+        <div class="frow">
+          <div class="fg"><label>FIRST NAME</label><input type="text" id="fname" placeholder="John"/></div>
+          <div class="fg"><label>LAST NAME</label><input type="text" id="lname" placeholder="Doe"/></div>
+        </div>
+        <div class="fg"><label>EMAIL ADDRESS</label><input type="email" id="femail" placeholder="john@company.com"/></div>
+        <div class="fg"><label>PHONE / WHATSAPP</label><input type="tel" id="fphone" placeholder="+234 800 000 0000"/></div>
+        <div class="fg">
+          <label>SERVICE INTERESTED IN</label>
+          <select id="fservice">
+            <option value="">Select a service...</option>
+            <option>Custom Software Development</option>
+            <option>Web Development</option>
+            <option>Mobile App Development</option>
+            <option>Business Automation</option>
+            <option>AI &amp; Machine Learning</option>
+            <option>Cloud &amp; DevOps</option>
+            <option>Cybersecurity</option>
+            <option>UI/UX Design</option>
+            <option>Data &amp; Analytics</option>
+            <option>Other / Not Sure Yet</option>
+          </select>
+        </div>
+        <div class="fg"><label>TELL US ABOUT YOUR PROJECT</label><textarea id="fmsg" placeholder="Describe your project, goals, and timeline. The more detail, the better we can help."></textarea></div>
+        <button class="btn-p" id="sbtn" onclick="submitForm(event)">Send Message &#8594;</button>
+        <div class="form-success" id="formSuccess">
+          &#9989; Got it! We will be in touch within 24 hours.<br>
+          For a faster reply, <a href="https://wa.me/2349164386564">message us directly on WhatsApp</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg-grid">
+    <div class="fb">
+      <a href="javascript:void(0)" onclick="go('top')" class="logo">GP<em>.</em>Tech</a>
+      <p>Greener Pastures Tech — building digital solutions that open new opportunities for businesses across Africa and beyond. New company. Real passion. Honest work.</p>
+      <div class="socials">
+        <a class="soc" href="https://www.instagram.com/greenerpasturestech" target="_blank" rel="noopener" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a class="soc" href="https://www.tiktok.com/@greenerpasturestech" target="_blank" rel="noopener" title="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.75a4.85 4.85 0 01-1.01-.06z"/></svg>
+        </a>
+        <a class="soc" href="https://wa.me/2349164386564" target="_blank" rel="noopener" title="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+        </a>
+        <a class="soc" href="mailto:info@greenerpasturestech.xyz" title="Email">@</a>
+      </div>
+    </div>
+    <div class="fc">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="javascript:void(0)" onclick="go('services')">Custom Software</a></li>
+        <li><a href="javascript:void(0)" onclick="go('services')">Web Development</a></li>
+        <li><a href="javascript:void(0)" onclick="go('services')">Mobile Apps</a></li>
+        <li><a href="javascript:void(0)" onclick="go('services')">Automation</a></li>
+        <li><a href="javascript:void(0)" onclick="go('services')">AI Solutions</a></li>
+        <li><a href="javascript:void(0)" onclick="go('services')">Cybersecurity</a></li>
+      </ul>
+    </div>
+    <div class="fc">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="javascript:void(0)" onclick="go('about')">About Us</a></li>
+        <li><a href="javascript:void(0)" onclick="go('process')">Our Process</a></li>
+        <li><a href="javascript:void(0)" onclick="go('testimonials')">Reviews</a></li>
+      </ul>
+    </div>
+    <div class="fc">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="javascript:void(0)" onclick="go('contact')">Free Consultation</a></li>
+        <li><a href="https://wa.me/2349164386564" target="_blank" rel="noopener">WhatsApp Us</a></li>
+        <li><a href="mailto:info@greenerpasturestech.xyz">info@greenerpasturestech.xyz</a></li>
+        <li><a href="tel:+2349164386564">+234 916 438 6564</a></li>
+        <li><a href="https://www.greenerpasturestech.xyz" target="_blank">www.greenerpasturestech.xyz</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fbot">
+    <span>&#169; 2026 Greener Pastures Tech. All rights reserved.</span>
+    <span>Built with &#127807; in Lagos, Nigeria</span>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+var dot=document.getElementById('dot'),ring=document.getElementById('ring');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+(function tick(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick);})();
+document.querySelectorAll('a,button,.svc-card,.tcard,.proc-step').forEach(function(el){
+  el.addEventListener('mouseenter',function(){ring.classList.add('grow');});
+  el.addEventListener('mouseleave',function(){ring.classList.remove('grow');});
+});
+
+/* ── SCROLL ── */
+function go(id){
+  closeMenu();
+  if(id==='top'){window.scrollTo({top:0,behavior:'smooth'});return;}
+  var el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── HAMBURGER ── */
+function closeMenu(){
+  document.getElementById('hbg').classList.remove('open');
+  document.getElementById('mmenu').classList.remove('open');
+}
+document.getElementById('hbg').addEventListener('click',function(){
+  this.classList.toggle('open');
+  document.getElementById('mmenu').classList.toggle('open');
+});
+
+/* ── REVEAL ── */
+var rObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');rObs.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){rObs.observe(el);});
+
+/* ── FORM — sends via WhatsApp ── */
+function submitForm(e){
+  e.preventDefault();
+  var fname=document.getElementById('fname').value.trim();
+  var lname=document.getElementById('lname').value.trim();
+  var femail=document.getElementById('femail').value.trim();
+  var fphone=document.getElementById('fphone').value.trim();
+  var fservice=document.getElementById('fservice').value||'Not specified';
+  var fmsg=document.getElementById('fmsg').value.trim();
+
+  if(!fname||!femail){
+    alert('Please fill in at least your name and email address.');
+    return;
+  }
+
+  var msg='Hello Greener Pastures Tech!%0A%0A'
+    +'Name: '+encodeURIComponent(fname+(lname?' '+lname:''))+'%0A'
+    +'Email: '+encodeURIComponent(femail)+'%0A'
+    +(fphone?'Phone: '+encodeURIComponent(fphone)+'%0A':'')
+    +'Service: '+encodeURIComponent(fservice)+'%0A'
+    +(fmsg?'%0AMessage: '+encodeURIComponent(fmsg):'%0AI would like to book a free consultation.');
+
+  // Show success
+  document.getElementById('formSuccess').style.display='block';
+  var btn=document.getElementById('sbtn');
+  btn.textContent='Message Sent \u2713';
+  btn.style.background='#1db954';
+  btn.disabled=true;
+
+  // Open WhatsApp
+  setTimeout(function(){
+    window.open('https://wa.me/2349164386564?text='+msg,'_blank');
+  },600);
+}
+</script>
+</body>
+</html>
